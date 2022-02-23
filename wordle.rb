@@ -8,19 +8,64 @@ class Game
   end
 
   def start_game
-    @word = pick_word
+    @word = pick_word.upcase.split('')
     @tries = 0
-    @board = '_____'
+    @board = Array.new(5, '_')
+    @showboard = Array.new(5, '_')
+    @bin = []
     puts 'Guess a 5-letter word!'
-    @player.guess
+    check_letters(@player.guess)
   end
 
   def pick_word
     dictionary.sample
   end
 
+  def check_letters(guess)
+    guess.each_with_index do |guessed_letter, guessed_index|
+      if guessed_letter == @word[guessed_index]
+        @showboard[guessed_index] = "\e[32m#{guessed_letter}\e[0m"
+        @board[guessed_index] = guessed_letter
+      elsif @word.include?(guessed_letter)
+        @showboard[guessed_index] = "\e[33m#{guessed_letter}\e[0m"
+      else
+        @showboard[guessed_index] = "\e[31m#{guessed_letter}\e[0m"
+      end
+      unless @bin.include?(guessed_letter)
+        @bin.push("#{guessed_letter}")
+      end
+    end
+    @tries += 1
+    check_if_won
+  end
+
+  def check_if_won
+    if @board.include?('_')
+      print_board
+      end_game if check_if_lost
+      check_letters(@player.guess)
+    else
+      puts "\e[32mYou won!\e[0m The word was #{@word.join}. Starting new game"
+      start_game
+    end
+  end
+
+  def check_if_lost
+    if @tries >= 6
+      true
+    end
+  end
+
+  def end_game
+    puts "\e[31mGame over!\e[0m The word was #{@word.join}. Starting new game."
+    start_game
+  end
+
   def print_board
-    puts @board
+    current_board = @showboard.map{ |letter| "#{letter} " }.join
+    puts "[#{@tries}/6] #{current_board}"
+    print "Guessed letters: #{@bin.join(', ')}"
+    puts
   end
 
   def dictionary
@@ -29,10 +74,10 @@ class Game
 end
 
 # Player actions
-class Player < Game
+class Player
   def guess
-    guess = gets.chomp.split
-    return if guess.size == 5
+    guess = gets.chomp.upcase.split('')
+    return guess if guess.size == 5 || !guess.any { |letter| letter.is_a(String)}
 
     puts "This word doesn't have 5 letters! Try again"
     self.guess

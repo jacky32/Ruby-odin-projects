@@ -21,3 +21,7 @@
 6. linked_lists.rb
  - simple linked list with nodes which point to the next node
  - https://www.theodinproject.com/lessons/ruby-linked-lists
+
+7. binary_search_tree.rb
+ - building and searching through a balancer binary search tree
+ - https://www.theodinproject.com/lessons/ruby-binary-search-trees

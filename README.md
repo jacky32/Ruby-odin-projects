@@ -17,3 +17,7 @@
 
 5. wordle.rb
  - Wordle game in Ruby.
+
+6. linked_lists.rb
+ - simple linked list with nodes which point to the next node
+ - https://www.theodinproject.com/lessons/ruby-linked-lists

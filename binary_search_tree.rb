@@ -1,4 +1,5 @@
 # frozen_string_literal: false
+# rubocop:disable ClassLength
 
 require 'pry'
 # class for each node
@@ -126,7 +127,8 @@ class Tree
     node_values
   end
 
-  def height(value, current = @root, counter = 1)
+  # gets the distance from value to the root
+  def depth(value, current = @root, counter = 1)
     # value doesn't exist in the tree
     return nil if current.nil?
 
@@ -134,11 +136,20 @@ class Tree
     return counter if value == current.data
 
     # recurse down
-    return height(value, current.right, counter += 1) if value > current.data
-    return height(value, current.left, counter += 1) if value < current.data
+    return depth(value, current.right, counter += 1) if value > current.data
+    return depth(value, current.left, counter += 1) if value < current.data
   end
 
-  def depth(value); end
+  # gets the distance from the value to the deepest leaf in its subtree
+  def height(value, current = find(value))
+    return nil if find(value).nil?
+    return 0 if current.nil?
+
+    left_tree = height(value, current.left)
+    right_tree = height(value, current.right)
+
+    [left_tree, right_tree].max + 1
+  end
 
   def balanced?; end
 
@@ -158,14 +169,17 @@ strom.pretty_print
 strom.delete(120)
 strom.delete(3)
 strom.pretty_print
-puts strom.find(7).data
-puts strom.find(502).data
-puts strom.find(63).data
-puts strom.find(7123)
+p strom.find(7).data
+p strom.find(502).data
+p strom.find(63).data
+p strom.find(7123)
 p strom.level_order
 p strom.inorder
 p strom.preorder
 p strom.postorder
-p strom.height(7)
+p strom.depth(7)
+p strom.depth(9)
+p strom.depth(122)
+p strom.height(4)
 p strom.height(9)
-p strom.height(122)
+p strom.height(12)

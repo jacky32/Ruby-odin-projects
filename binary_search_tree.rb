@@ -74,7 +74,17 @@ class Tree
     min_val
   end
 
-  def find(value); end
+  def find(value, current = @root)
+    # value doesn't exist in the tree
+    return nil if current.nil?
+
+    # base case
+    return current if value == current.data
+
+    # recurse down
+    return find(value, current.right) if value > current.data
+    return find(value, current.left) if value < current.data
+  end
 
   def level_order(&block); end
 
@@ -106,3 +116,7 @@ strom.pretty_print
 strom.delete(120)
 strom.delete(3)
 strom.pretty_print
+puts strom.find(7).data
+puts strom.find(502).data
+puts strom.find(63).data
+puts strom.find(7123)

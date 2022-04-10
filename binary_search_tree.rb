@@ -151,9 +151,13 @@ class Tree
     [left_tree, right_tree].max + 1
   end
 
-  def balanced?; end
+  def balanced?
+    
+  end
 
-  def rebalance; end
+  def rebalance
+    @root = build_tree(inorder)
+  end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
@@ -183,3 +187,5 @@ p strom.depth(122)
 p strom.height(4)
 p strom.height(9)
 p strom.height(12)
+strom.rebalance
+strom.pretty_print

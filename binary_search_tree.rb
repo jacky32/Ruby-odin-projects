@@ -86,7 +86,23 @@ class Tree
     return find(value, current.left) if value < current.data
   end
 
-  def level_order(&block); end
+  def level_order(&block)
+    queue = []
+    node_values = []
+    current = @root
+    if block_given?
+      puts 'block'
+    else
+      loop do
+        queue << current.left unless current.left.nil?
+        queue << current.right unless current.right.nil?
+        node_values.push(current.data)
+        break if queue.empty?
+        current = queue.shift
+      end
+    end
+    node_values
+  end
 
   def inorder(&block); end
 
@@ -120,3 +136,4 @@ puts strom.find(7).data
 puts strom.find(502).data
 puts strom.find(63).data
 puts strom.find(7123)
+p strom.level_order

@@ -1,5 +1,6 @@
 # frozen_string_literal: false
 
+require 'pry'
 # class for each node
 class Node
   attr_accessor :data, :left, :right
@@ -86,29 +87,44 @@ class Tree
     return find(value, current.left) if value < current.data
   end
 
-  def level_order(&block)
-    queue = []
-    node_values = []
-    current = @root
-    if block_given?
-      puts 'block'
-    else
-      loop do
-        queue << current.left unless current.left.nil?
-        queue << current.right unless current.right.nil?
-        node_values.push(current.data)
-        break if queue.empty?
-        current = queue.shift
-      end
+  def level_order(queue = [], node_values = [], current = @root)
+    loop do
+      queue << current.left unless current.left.nil?
+      queue << current.right unless current.right.nil?
+      node_values.push(current.data)
+      break if queue.empty?
+
+      current = queue.shift
     end
     node_values
   end
 
-  def inorder(&block); end
+  def inorder(node_values = [], current = @root)
+    return if current.nil?
 
-  def preorder(&block); end
+    inorder(node_values, current.left)
+    node_values.push(current.data)
+    inorder(node_values, current.right)
+    node_values
+  end
 
-  def postorder(&block); end
+  def preorder(node_values = [], current = @root)
+    return if current.nil?
+
+    node_values.push(current.data)
+    preorder(node_values, current.left)
+    preorder(node_values, current.right)
+    node_values
+  end
+
+  def postorder(node_values = [], current = @root)
+    return if current.nil?
+
+    postorder(node_values, current.left)
+    postorder(node_values, current.right)
+    node_values.push(current.data)
+    node_values
+  end
 
   def height(node); end
 
@@ -137,3 +153,6 @@ puts strom.find(502).data
 puts strom.find(63).data
 puts strom.find(7123)
 p strom.level_order
+p strom.inorder
+p strom.preorder
+p strom.postorder

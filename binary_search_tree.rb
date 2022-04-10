@@ -1,4 +1,5 @@
 # frozen_string_literal: false
+
 # rubocop:disable ClassLength
 
 require 'pry'
@@ -152,7 +153,7 @@ class Tree
   end
 
   def balanced?
-    
+    height(@root.right.data) == height(@root.left.data)
   end
 
   def rebalance
@@ -187,5 +188,12 @@ p strom.depth(122)
 p strom.height(4)
 p strom.height(9)
 p strom.height(12)
+strom.insert(120)
+strom.insert(240)
+strom.insert(460)
+strom.insert(480)
+strom.pretty_print
+p strom.balanced?
 strom.rebalance
 strom.pretty_print
+p strom.balanced?

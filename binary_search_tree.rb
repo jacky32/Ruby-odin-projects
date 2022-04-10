@@ -126,9 +126,19 @@ class Tree
     node_values
   end
 
-  def height(node); end
+  def height(value, current = @root, counter = 1)
+    # value doesn't exist in the tree
+    return nil if current.nil?
 
-  def depth(node); end
+    # base case
+    return counter if value == current.data
+
+    # recurse down
+    return height(value, current.right, counter += 1) if value > current.data
+    return height(value, current.left, counter += 1) if value < current.data
+  end
+
+  def depth(value); end
 
   def balanced?; end
 
@@ -156,3 +166,6 @@ p strom.level_order
 p strom.inorder
 p strom.preorder
 p strom.postorder
+p strom.height(7)
+p strom.height(9)
+p strom.height(122)

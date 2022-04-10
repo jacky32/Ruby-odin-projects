@@ -167,16 +167,15 @@ class Tree
   end
 end
 
-strom = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 54, 63, 122, 502])
+strom = Tree.new(Array.new(15) { rand(1..100) })
 strom.pretty_print
 strom.insert(120)
 strom.pretty_print
 strom.delete(120)
 strom.delete(3)
 strom.pretty_print
-p strom.find(7).data
-p strom.find(502).data
-p strom.find(63).data
+p strom.find(502)
+p strom.find(63)
 p strom.find(7123)
 p strom.level_order
 p strom.inorder

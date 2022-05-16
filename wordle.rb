@@ -21,7 +21,7 @@ class Game
     dictionary.sample
   end
 
-  def check_letters(guess)
+  def check_letters(guess) # rubocop:todo Metrics/MethodLength
     guess.each_with_index do |guessed_letter, guessed_index|
       if guessed_letter == @word[guessed_index]
         @showboard[guessed_index] = "\e[32m#{guessed_letter}\e[0m"
@@ -31,9 +31,7 @@ class Game
       else
         @showboard[guessed_index] = "\e[31m#{guessed_letter}\e[0m"
       end
-      unless @bin.include?(guessed_letter)
-        @bin.push("#{guessed_letter}")
-      end
+      @bin.push(guessed_letter.to_s) unless @bin.include?(guessed_letter)
     end
     @tries += 1
     check_if_won
@@ -51,9 +49,7 @@ class Game
   end
 
   def check_if_lost
-    if @tries >= 6
-      true
-    end
+    true if @tries >= 6
   end
 
   def end_game
@@ -62,7 +58,7 @@ class Game
   end
 
   def print_board
-    current_board = @showboard.map{ |letter| "#{letter} " }.join
+    current_board = @showboard.map { |letter| "#{letter} " }.join
     puts "[#{@tries}/6] #{current_board}"
     print "Guessed letters: #{@bin.join(', ')}"
     puts
@@ -77,7 +73,7 @@ end
 class Player
   def guess
     guess = gets.chomp.upcase.split('')
-    return guess if guess.size == 5 || !guess.any { |letter| letter.is_a(String)}
+    return guess if guess.size == 5 || !guess.any { |letter| letter.is_a(String) }
 
     puts "This word doesn't have 5 letters! Try again"
     self.guess

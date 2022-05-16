@@ -1,6 +1,8 @@
-def substrings (string, dictionary)
-  string_array = string.downcase.split(" ")
-  result = Hash.new()
+# frozen_string_literal: true
+
+def substrings(string, dictionary)
+  string_array = string.downcase.split(' ')
+  result = {}
   dictionary.each do |d_word|
     string_array.each do |s_word|
       if s_word.include?(d_word)
@@ -11,7 +13,7 @@ def substrings (string, dictionary)
   result
 end
 
-dictionary = ["below","down","go","going","horn","how","howdy","it","i","low","own","part","partner","sit"]
+dictionary = %w[below down go going horn how howdy it i low own part partner sit]
 
-p substrings("below", dictionary)
+p substrings('below', dictionary)
 p substrings("Howdy partner, sit down! How's it going?", dictionary)

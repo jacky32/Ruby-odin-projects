@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'csv'
 require 'google/apis/civicinfo_v2'
 require 'erb'
@@ -8,7 +10,7 @@ def clean_zipcode(zipcode)
   zipcode.to_s.rjust(5, '0')[0..4]
 end
 
-def legislators_by_zipcode(zip)
+def legislators_by_zipcode(zip) # rubocop:todo Metrics/MethodLength
   civic_info = Google::Apis::CivicinfoV2::CivicInfoService.new
   civic_info.key = 'AIzaSyClRzDqDh5MsXwnCWi0kOiiBivP6JsSyBw'
 
@@ -16,9 +18,9 @@ def legislators_by_zipcode(zip)
     civic_info.representative_info_by_address(
       address: zip,
       levels: 'country',
-      roles: ['legislatorUpperBody', 'legislatorLowerBody']
+      roles: %w[legislatorUpperBody legislatorLowerBody]
     ).officials
-  rescue
+  rescue StandardError
     'You can find your representatives by visiting www.commoncause.org/take-action/find-elected-officials'
   end
 end
@@ -32,8 +34,8 @@ def save_thank_you_letter(id, form_letter)
   end
 end
 
-def clean_phone(number)
-  number = number.to_s.tr("() -.", "")
+def clean_phone(number) # rubocop:todo Metrics/MethodLength
+  number = number.to_s.tr('() -.', '')
   if number.length < 10
     'BAD NUMBER'
   elsif number.length == 10
@@ -49,32 +51,28 @@ def clean_phone(number)
   end
 end
 
-def clean_time(time)
-  begin
-    year = "20#{time.split(" ")[0].split("/")[0]}" unless time.split(" ")[0].split("/")[0].length != 2
-    day = time.split(" ")[0].split("/")[1]
-    month = time.split(" ")[0].split("/")[2]
-    hours = time.split(" ")[1].split(":")[0]
-    mins = time.split(" ")[1].split(":")[1]
+def clean_time(time) # rubocop:todo Metrics/AbcSize
+  year = "20#{time.split(' ')[0].split('/')[0]}" unless time.split(' ')[0].split('/')[0].length != 2
+  day = time.split(' ')[0].split('/')[1]
+  month = time.split(' ')[0].split('/')[2]
+  hours = time.split(' ')[1].split(':')[0]
+  mins = time.split(' ')[1].split(':')[1]
 
-    reg_date = Time.new(year, month, day, hours, mins, 0, "+01:00")
-  rescue
-    'INVALID'
-  end
+  reg_date = Time.new(year, month, day, hours, mins, 0, '+01:00') # rubocop:todo Lint/UselessAssignment
+rescue StandardError
+  'INVALID'
 end
 
 def best_hour(hours)
-  hours.reduce(Hash.new(0)) do |a,b|
+  hours.each_with_object(Hash.new(0)) do |b, a|
     a[b] += 1
-    a
-  end.max_by{|k,v| v}[0]
+  end.max_by { |_k, v| v }[0] # rubocop:todo Style/MultilineBlockChain
 end
 
 def best_day(days)
-  days.reduce(Hash.new(0)) do |a,b|
+  days.each_with_object(Hash.new(0)) do |b, a|
     a[b] += 1
-    a
-  end.max_by{|k,v| v}[0]
+  end.max_by { |_k, v| v }[0] # rubocop:todo Style/MultilineBlockChain
 end
 
 puts 'Event Manager Initialized!'
@@ -98,13 +96,13 @@ contents.each do |row|
   phone = clean_phone(row[:homephone])
   reg_date = clean_time(row[:regdate])
   hours.push(reg_date.hour) unless reg_date == 'INVALID'
-  days.push(reg_date.strftime("%A").downcase) unless reg_date == 'INVALID'
+  days.push(reg_date.strftime('%A').downcase) unless reg_date == 'INVALID'
 
   legislators = legislators_by_zipcode(zipcode)
 
   form_letter = erb_template.result(binding)
 
-  save_thank_you_letter(id,form_letter)
+  save_thank_you_letter(id, form_letter)
 end
 
 puts "Best hour is #{best_hour(hours)}"
